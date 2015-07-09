@@ -1,0 +1,57 @@
+<!doctype html>
+
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <title>PyROTChecker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-combined.min.css') }}">
+    <script src="{{ url_for('static', filename='angular.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='grap3.js') }}"></script>
+  </head>
+  {% raw %}
+  <body ng-app="grap3App">
+    <div class="container" ng-controller="Grap3Controller as grap3">
+      <div class="page-header">
+        <h1>Grap3 Recommendations</h1>
+      </div>
+      <div class="row">
+        <div class="span6">
+        <p class="lead">Did you forget any grocery item?</p>
+          <i ng-repeat="i in grap3.searchTerms">
+            {{ i }} <a href="#" ng-click='grap3.removeGrocery(i)'>(x)</a>
+            <strong ng-if="!$last">&nbsp;&#8226;&nbsp;</strong>
+          </i>
+          <a href="" ng-click="grap3.removeAllGrocery()" ng-show="grap3.recommendations.recommendations">Remove all</a>
+          <div ng-show="grap3.recommendations.status==200">
+            <div class="well" ng-repeat="i in grap3.recommendations.recommendations">
+                There is a <strong>{{ i.common * 100 }}%</strong> chance that you are missing <strong>{{ i.name }}</strong>
+            </div>
+            <div class="alert" ng-if="!grap3.recommendations.recommendations.length">
+              <strong> Warning! </strong>
+              Sorry, we couldn't find a match - <a href="" ng-click="grap3.removeAllGrocery()">Remove all</a>
+            </div>
+          </div>
+        </div>
+        <div class="span4">
+          <div class="well">
+            <p class="lead">Add items to your list </p>
+            <form name="grap3Form" class="form-inline" _ng-submit="grap3.getGroceries()">
+              <div class="form-group">
+                <input type="text" class="form-control" id="url" ng-model="grap3.groceryText" placeholder="Enter a grocery item here">
+              </div>
+            </form>
+            <a href="#" ng-repeat="i in grap3.groceryItems | filter:not(grap3.searchTerms) | filter:grap3.groceryText:strict" ng-click='grap3.addGrocery(i)'>{{ i }}, </a>
+          </div>
+        </div>
+      </div>
+      <div class="row well">
+        <strong>Example</strong></br>
+        Search for "soda"
+        <a href="" ng-click="grap3.groceryText='soda'"> Try it! </a></br>
+        Search for "soap"
+        <a href="" ng-click="grap3.groceryText='soap'"> Try it! </a>
+      </div>
+    </div>
+  </body>
+{% endraw %}
+</html>
